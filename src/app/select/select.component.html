@@ -1,0 +1,81 @@
+<div class="container border border-dark rounded p-2 mb-3">
+    <form #ref="ngForm" (ngSubmit)="apply(ref)">
+        <div class="row">
+            <div class="col-sm-12 col-md-2 mb-2"> <b>Price :</b> </div>            
+            <div class="col-sm-2 col-md-1">
+                <label class="form-label" for="from"> <b>From</b> </label> 
+            </div>
+            <div class="col-sm-4 col-md-3">
+                <select class="form-select mb-3" name="from" id="from" ngModel>
+                    <option value="100" >100</option>  
+                    <option value="200"  >200</option>
+                    <option value="300"  >300</option>  
+                    <option value="400"  >400</option>
+                    <option value="500"  >500</option>   
+                    <option value="700"  >700</option>
+                    <option value="1000"  >1000</option>
+                    <option value="1200"  >1200</option>   
+                    <option value="1500"  >1500</option>
+                    <option value="1700"  >1700</option>   
+                    <option value="2000"  >2000</option>
+                </select>    
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-1 col-md-1">
+                <label class="form-label" for="to"> <b>to</b> </label>   
+            </div>
+            <div class="col-sm-4 col-md-3">
+                <select class="form-select mb-3" name="to" id="to" ngModel>
+                    <option value="500"  >500</option>  
+                    <option value="700"  >700</option>
+                    <option value="1000"  >1000</option>
+                    <option value="1200"  >1200</option>   
+                    <option value="1500"  >1500</option>
+                    <option value="1700"  >1700</option>   
+                    <option value="2000"  >2000</option>   
+                    <option value="3000"  >3000</option>
+                    <option value="4000"  >4000</option>   
+                    <option value="5000" >5000</option>
+                </select> 
+            </div>
+
+
+        </div>
+
+        <div> <b>Brand :</b></div>
+        <div class="row my-2">
+            <div class="col-sm-6 col-md-4 col-lg-3 form-check ps-5">
+                <input class="form-check-input" name="brand" type="radio" value="allbrand" id="allbrand" ngModel>
+                <label class="form-check-label" for="allbrand">All</label>
+            </div>
+            <div *ngFor="let b of brands" class="col-sm-6 col-md-4 col-lg-3 form-check ps-5">
+                <input class="form-check-input" name="brand" type="radio" value={{b.Brand_Name}} id={{b.Brand_Name}} ngModel>
+                <label class="form-check-label" for={{b.Brand_Name}}>{{b.Brand_Name}}</label>
+            </div>
+        </div>
+        
+        <div> <b>Type :</b></div>
+        <div class="row my-2">
+            <div class="col-sm-6 col-lg-3 form-check ps-5">
+                <input class="form-check-input" name="type" type="radio" value="alltype" id="alltype" ngModel>
+                <label class="form-check-label" for="alltype">All</label>
+            </div>
+            <div class="col-sm-6 col-lg-3 form-check ps-5">
+                <input class="form-check-input" name="type" type="radio" value="Men" id="men" ngModel>
+                <label class="form-check-label" for="men">Men</label>
+            </div>
+            <div class="col-sm-6 col-lg-3 form-check ps-5">
+                <input class="form-check-input" name="type" type="radio" value="Women" id="women" ngModel>
+                <label class="form-check-label" for="Women">Women</label>
+            </div>
+            <div class="col-sm-6 col-lg-3 form-check ps-5">
+                <input class="form-check-input" name="type" type="radio" value="Kids" id="kids" ngModel>
+                <label class="form-check-label" for="kids">Kids</label>
+            </div>
+        </div>
+        <div >
+            <button type="submit" class="btn btn-primary rounded">Apply</button>
+        </div>
+    </form>
+    
+</div>

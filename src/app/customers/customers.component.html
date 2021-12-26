@@ -1,0 +1,112 @@
+<div class="container my-3 bg p-2 rounded">
+    <div class="row my-3">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 border border-dark rounded p-3">
+            <h4 class="text-center mb-5"><u>Enter Customer Name and their purchases :</u></h4>
+            <form #ref=ngForm (ngSubmit)='ref.form.valid && customerDetails(ref)'>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="name"> <b>Name</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="text" name="name" id="name"  ngModel required pattern="[A-Z].*" #refCustomerName="ngModel" autocomplete="off">
+                        <p class="text-danger" *ngIf="(refCustomerName.touched || ref.submitted) && refCustomerName.errors?.required">*Customer Name is required</p>
+                        <p class="text-danger" *ngIf="(refCustomerName.touched || ref.submitted) && refCustomerName.errors?.pattern">*First Letter is uppercase and remaining are lowercase</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-success d-block mx-auto " type='submit'>Submit</button>
+                </div>
+            </form>
+            <form *ngIf="details" #ref1=ngForm (ngSubmit)="purchases(ref1)">
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="pid"> <b>Product ID</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="pid" id="pid" ngModel required  #refProductID="ngModel" autocomplete="off">
+                        <p class="text-danger" *ngIf="(refProductID.touched || ref1.submitted) && refProductID.errors?.required">*Product ID is required</p>
+                    </div>
+                </div>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="quantity"> <b>Quantity</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="quantity" id="quantity" ngModel required #refQuantity="ngModel">
+                        <p class="text-danger" *ngIf="(refQuantity.touched || ref1.submitted) && refQuantity.errors?.required">*Quantity is required</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-success d-block mx-auto " type='submit'>Submit</button>
+                </div>
+            </form>
+            <div>
+                <button *ngIf="details" class="btn btn-success float-end" (click)="update()"> Update </button>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <div class=" border border-dark rounded p-2">
+            
+        <div class="row">
+                
+            <form class="col-md-11" #ref2=ngForm (ngSubmit)="ref2.form.valid && getDetailsByDate(ref2.value)">
+                <div class="row">
+                    <div class="col-12 col-md-2 pt-3 ps-4 mb-3">
+                        <b>Select Date</b>
+                    </div>
+                    <div class="col-3 col-md-2">
+                        <label class="form-label" for="yyyy"></label>
+                        <input class="form-control" type="text" id="yyyy" name="yyyy" placeholder="yyyy" ngModel required pattern="\d{4}" #refYear="ngModel" autocomplete="off">
+                        <p class="test-danger" *ngIf="(refYear.submitted || refYear.touched) && refYear.errors?.required">*Year is required</p>
+                        <p class="test-danger" *ngIf="(refYear.submitted || refYear.touched) && refYear.errors?.pattern">*Year should be yyyy format</p>
+                    </div>
+                    <div class="col-3 col-md-2">
+                        <label class="form-label" for="mm"></label>
+                        <input class="form-control" type="text" id="mm" name="mm" placeholder="mm" ngModel required pattern="^(\d{2}|\d{1})$" #refMonth="ngModel" autocomplete="off">
+                        <p class="test-danger" *ngIf="(refMonth.submitted || refMonth.touched) && refMonth.errors?.required">*Month is required</p>
+                        <p class="test-danger" *ngIf="(refMonth.submitted || refMonth.touched) && refMonth.errors?.pattern">*Month should be mm format</p>
+                    </div>
+                    <div class="col-3 col-md-2">
+                        <label class="form-label" for="dd"></label>
+                        <input class="form-control" type="text" id="dd" name="dd" placeholder="dd" ngModel required pattern="^(\d{2}|\d{0})$" #refDate="ngModel" autocomplete="off">
+                        <p class="test-danger" *ngIf="(refDate.submitted || refDate.touched) && refDate.errors?.required">*Date is required</p>
+                        <p class="test-danger" *ngIf="(refDate.submitted || refDate.touched) && refDate.errors?.pattern">*Date should be dd format</p>
+                    </div>
+                    <div class="col-3 col-md-2 pt-2">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>        
+                    <div class="col-md-1"></div>
+                </div>
+            </form>
+            <div class="col-1 col-md-1 pt-2">
+                <button class="btn btn-dark p-2" (click)="refresh()"><i class="fas fa-sync"></i></button>
+            </div>
+        </div>
+        <h4><b>Today's Customers : </b></h4>
+        <div class="table-responsive mt-3">
+            <table  class="table table-bordered table-light table-hover border-dark table-striped">
+                <thead class="h4">
+                    <tr>
+                        <th>#</th>
+                        <th>Customer Name</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Show Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of customers; index as i">
+                        <td>{{c.Customer_ID}}</td>
+                        <td>{{c.CName}}</td>
+                        <td>{{c.CDate}}</td>
+                        <td>{{c.Amount}}</td>
+                        <td><button class="btn btn-primary rounded" (click)="customerPurchaseDetails(i)">...</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

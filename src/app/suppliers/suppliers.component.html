@@ -1,0 +1,35 @@
+<div class="container table-responsive mt-4 bg p-2 rounded">
+    <div class="row mt-3">
+        <div class="col-sm-6 col-md-8"> <h3><b>Supplier Details :</b></h3></div>
+        <div class="col-12 col-sm-6 col-md-4">
+            <div class="input-group mb-3 ">
+                <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
+                <input type="text" name="SName" placeholder="Supplier Name" class="form-control" [(ngModel)]="searchTerm">
+            </div>
+        </div>
+    </div>
+    
+    <table class="table table-bordered table-light table-hover border-dark table-striped">
+        <thead  class="text-center align-middle h4">
+            <tr>
+                <th rowspan="2">Supplier_ID</th>
+                <th rowspan="2">Name</th>
+                <th rowspan="2">E-mail</th>
+                <th colspan="2">Phone Number</th>
+            </tr>
+            <tr>
+                <th>Primary</th>
+                <th>Secondary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let s of suppliers | search : searchTerm">
+                <td>{{s.Supplier_ID}}</td>
+                <td>{{s.SName}}</td>
+                <td>{{s.email}}</td>
+                <td>{{s.phone}}</td>
+                <td>{{s.alt_phone}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

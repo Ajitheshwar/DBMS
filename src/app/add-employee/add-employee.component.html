@@ -1,0 +1,68 @@
+<div class="container my-4">
+    <div class="row">
+        <div class="col col-md-1"></div>
+        <div class="col-12 col-md-10 border border-dark rounded">
+            <h4 class="py-3"><b>Enter New Employee Details :</b></h4>
+            <form class="p-2 m-2" #ref=ngForm (ngSubmit)="ref.form.valid && employeeDetails(ref)">
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="ename"> <b>Name</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="text" name="ename" id="ename" ngModel required pattern="[A-Z].*" #refEName="ngModel" autocomplete="off">
+                        <p class="text-danger" *ngIf="(ref.submitted || refEName.touched) && refEName.errors?.required">*Employee Name is required</p>
+                        <p class="text-danger" *ngIf="(ref.submitted || refEName.touched) && refEName.errors?.pattern">*First Letter should be uppercase and remaining are lowercase</p>
+                    </div>
+                </div>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="designation"> <b>Designation</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10 ">
+                        <select class="form-select" name="designation" id="designation" ngModel required #refDesignation="ngModel">
+                            <option value="NULL" disabled>Select Designation</option>
+                            <option value="Worker">Worker</option>
+                            <option value="Floor Cleaner">Floor Cleaner</option>
+                            <option value="Accountant">Accountant</option>
+                            <option value="Supervisor">Supervisor</option>
+                        </select>    
+                        <p class="text-danger" *ngIf="(ref.submitted || refDesignation.touched) && refDesignation.errors?.required">*Designation is required</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="empEmail"> <b>E-Mail</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="email" name="empEmail" id="empEmail" ngModel>
+                    </div>
+                </div>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="ephone1"> <b>Phone Number</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="ephone1" id="ephone1" ngModel required pattern="\d{10}" #refEPhone1="ngModel">
+                        <p class="text-danger" *ngIf="(ref.submitted || refEPhone1.touched) && refEPhone1.errors?.required">*Primary Phone Number is required</p>
+                        <p class="text-danger" *ngIf="(ref.submitted || refEPhone1.touched) && refEPhone1.errors?.pattern">*Phone Number must be 10-digists</p>
+                    </div>
+                </div>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="ephone2"> <b>Alt. Phone Number</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="ephone2" id="ephone2" ngModel pattern="^(\d{10}|\d{0})$" #refEPhone2="ngModel">
+                        <p class="text-danger" *ngIf="(ref.submitted || refEPhone2.touched) && refEPhone2.errors?.pattern">*Phone Number must be 10-digists</p>
+                    </div>
+                </div>
+                <div>                            
+                    <button type="submit" class="btn btn-success d-block mx-auto">Submit</button>
+                </div>
+  
+            </form>
+        </div>
+        <div class="col col-md-1"></div>
+    </div>
+</div>

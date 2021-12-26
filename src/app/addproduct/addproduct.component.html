@@ -1,0 +1,189 @@
+<div class="container my-4 ">
+    <div class="row ">
+        <div class="col col-md-1"></div>
+        <div class="col-md-10 p-2 border border-dark rounded">  
+            <h4 class="my-3 text-center"><b>Add New Product Details :</b></h4>
+            <!-- Cost Price Form-->         
+            <form class="p-2 pt-4 border border-dark rounded" #ref=ngForm (ngSubmit)='ref.form.valid && addCostPrice(ref.value)'>
+
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="brandname"> <b>Brand Name</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control " type="text" name="brandname" id="brandname" ngModel required #refBrandName="ngModel" autocomplete="off" pattern="[A-Z].*">
+                        <p class="text-danger" *ngIf="(refBrandName.touched || ref.submitted) && refBrandName.errors?.required">*Brand Name is required</p>
+                        <p class="text-danger" *ngIf="(refBrandName.touched || ref.submitted) && refBrandName.errors?.pattern">*First letter is uppercase letter and remaining are lowercase</p>        
+                    </div>
+                </div>
+
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="type"><b> Type </b><b class="text-danger">*</b></label>
+                    </div>
+                    <div class="col-md-5">
+                        <select class="form-select" name="type" id="type" ngModel required #refType="ngModel" autocomplete="off">
+                            <option value="" disabled>Select Type</option>
+                            <option value="Men">Men</option>
+                            <option value="Women">Women</option>
+                            <option value="Kids">Kids</option>
+                        </select>
+                        <p class="text-danger" *ngIf="(refType.touched || ref.submitted) && refType.errors?.required">*Type is required</p>
+                    </div>
+                </div>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="cost"> <b>Cost</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="cost" id="cost" ngModel required #refCost="ngModel">
+                        <p class="text-danger" *ngIf="(refCost.touched || ref.submitted) && refCost.errors?.required">*Cost is required</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="price"> <b>Price</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="price" id="price" ngModel required #refPrice="ngModel">
+                        <p class="text-danger" *ngIf="(refPrice.touched || ref.submitted) && refPrice.errors?.required">*Price is required</p>
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn btn-success d-block mx-auto " type='submit'>Submit</button>
+                </div>
+            </form>
+
+            <!-- Supplier Selection -->
+            <div *ngIf="btnsel" class="m-2 text-center">
+                <button class="btn btn-primary m-1" (click)="existingSupplier()"> Existing Supplier </button>
+                <button class="btn btn-primary m-1" (click)="newSupplier()"> New Supplier </button>
+            </div>
+
+            <!--Existing Supplier Form-->
+            <form *ngIf="existingSupplierVar" class="border border-dark rounded p-2 pt-4" #ref2=ngForm (ngSubmit)="ref2.form.valid && addExistingSupplier(ref2.value)">
+                
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="sname"> <b>Name</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10 ">
+                        <select class="form-select" name="sname" id="sname" ngModel required #refExistingSupplier="ngModel" autocomplete="off">
+                            <option value="NULL" selected disabled>Select Supplier Name</option>
+                            <option *ngFor="let s of suppliersBrand" value={{s.Supplier_ID}}>{{s.Supplier_ID}}  :  {{s.SName}}</option>
+                        </select>    
+                        <p class="text-danger" *ngIf="(refExistingSupplier.touched || ref2.submitted) && refExistingSupplier.errors?.required">*Supplier is required</p>
+                    </div>
+                </div>
+
+
+                <div>
+                    <button class="btn btn-success d-block mx-auto " type='submit'>Submit</button>
+                </div>
+
+            </form>
+
+
+            <!-- New Supplier Form-->
+            <form *ngIf="newSupplierVar" class="border border-dark rounded p-2 pt-4" #ref3=ngForm (ngSubmit)="ref3.form.valid && addNewSupplier(ref3.value)">
+                <h4 class="mb-4"><b>Supplier Details :</b></h4>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="sname"> <b> Name </b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="text" name="sname" id="sname" ngModel required pattern="[A-Z].*" #refSupplierName="ngModel" autocomplete="off">
+                        <p class="text-danger" *ngIf="(refSupplierName.touched || ref3.submitted) && refSupplierName.errors?.required">*Supplier Name is required</p>
+                        <p class="text-danger" *ngIf="(refSupplierName.touched || ref3.submitted) && refSupplierName.errors?.pattern">*First Letter is uppercase and remaining are lowercase</p>
+                    </div>
+                </div>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="semail"> <b> EMail </b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="email" name="semail" id="semail" ngModel required #refSupplierEMail="ngModel" autocomplete="off">
+                        <p class="text-danger" *ngIf="(refSupplierEMail.touched || ref3.submitted) && refSupplierEMail.errors?.required">*Supplier E-Mail is required</p>
+                    </div>
+                </div>
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="sphone1"> <b>Phone Number </b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="sphone1" id="sphone1" ngModel required pattern="\d{10}" #refSupplierPhone1="ngModel" autocomplete="off">
+                        <p class="text-danger" *ngIf="(refSupplierPhone1.touched || ref3.submitted) && refSupplierPhone1.errors?.required">*Primary Phone Number is required</p>
+                        <p class="text-danger" *ngIf="(refSupplierPhone1.touched || ref3.submitted) && refSupplierPhone1.errors?.pattern">*Phone Number should be 10 digits</p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="sphone2"> <b> Alt. Phone Number </b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="sphone2" id="sphone2" ngModel #refSupplierPhone2="ngModel" pattern="^(\d{10}|\d{0})$">
+                        <p class="text-danger" *ngIf="(refSupplierPhone2.touched || ref3.submitted) && refSupplierPhone2.errors?.pattern">*Phone Number should be 10 digits</p>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-success d-block mx-auto " type='submit'>Submit</button>
+                </div>
+
+            </form>
+
+            <!-- Product Details Form-->
+            <form *ngIf="productDetails" class="border border-dark rounded p-2 pt-4" #ref1=ngForm (ngSubmit)="ref1.form.valid && addProductDetails(ref1)">
+                <h4 class="mb-4"><b>Product Details :</b></h4>
+                
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="size"> <b>Size</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-5">
+                        <select class="form-select" name="size" id="size" ngModel #refSize="ngModel" autocomplete="off" required>
+                            <option value="" disabled>Select Size</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                        </select>
+                        <p class="text-danger" *ngIf="(ref1.submitted || refSize.touched) && refSize.errors?.required">*Size is Required</p>
+                    </div>
+                    <div class="col-md-5"></div>
+                </div>
+
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="color"> <b>Color</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="text" name="color" id="color" ngModel required pattern="[A-Z].*" #refColor="ngModel">
+                        <p class="text-danger" *ngIf="(ref1.submitted || refColor.touched) && refColor.errors?.required">*Color is Required</p>
+                        <p class="text-danger" *ngIf="(ref1.submitted || refColor.touched) && refColor.errors?.pattern">*First Letter is uppercase and remaining are lowercase</p>
+                    </div>
+                </div>
+            
+                <div class="row mb-3">    
+                    <div class="col-md-2">
+                        <label class="form-label" for="quantity"> <b>Quantity</b><b class="text-danger">*</b> </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" name="quantity" id="quantity" ngModel required #refQuantity="ngModel">
+                        <p class="text-danger" *ngIf="(ref1.submitted || refQuantity.touched) && refQuantity.errors?.required">*Quantity is Required</p>
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn btn-success d-block mx-auto " type='submit'>Submit</button>
+                </div>
+            </form>
+
+            <button *ngIf="productDetails" class="btn btn-success m-1 float-end" (click)="update()"> Update </button>
+        </div>
+        <div class=" col col-md-1"></div>
+    </div>
+</div>

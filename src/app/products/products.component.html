@@ -1,0 +1,34 @@
+<div class="container mt-3 rounded bg p-3">
+    <button class="btn btn-dark text-white p-2 mb-2 me-2" routerLink="add"><i class="fas fa-plus pe-1" style="color : white"></i>Add Product</button>
+    <button class="btn btn-primary rounded p-2 mb-2" routerLink="filter"    > Add Filters </button>
+    <router-outlet ></router-outlet> 
+    <button class="btn btn-dark p-2 float-end" (click)="allProducts()"><i class="fas fa-sync"></i></button>
+    <div class="table-responsive  border border-dark rounded px-3">   
+        <table class="table table-bordered table-light table-hover border-dark table-striped">
+            <caption class="table-style"><b>Products in Garment Shop :</b></caption>
+            <thead class="h4">
+                <tr >
+                    <th>#</th>
+                    <th>Brand Name</th>
+                    <th>Type</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of products">
+                    <td>{{p.Product_ID}}</td>
+                    <td>{{p.Brand_Name}}</td>
+                    <td>{{p.PType}}</td>
+                    <td>{{p.Color}}</td>
+                    <td>{{p.Size}}</td>
+                    <td>Rs.{{p.price}}/-</td>
+                    <td>{{p.Quantity}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
