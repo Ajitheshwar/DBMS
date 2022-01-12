@@ -25,6 +25,17 @@ export class ProductsService {
     )
   }
 
+  getSuppliers(Brand)
+  {
+    let obj={brand : Brand}
+    return this.http.post("/admin/products",obj);
+  }
+
+  orderProducts(orderDetails)
+  {
+    return this.http.put("/admin/products",orderDetails)
+  }
+
 
   //Select 
   getBrands(): Observable<any>{
@@ -76,6 +87,18 @@ export class ProductsService {
   //employee
   getEmployee() : Observable<any> {
     return this.http.get("/admin/employee")
+  }
+
+  deleteEmployee(e)
+  {
+    console.log(e)
+    return this.http.put("/admin/employee",e)
+  }
+
+  saveEmployee(e)
+  {
+    console.log(e);
+    return this.http.put("/admin/employee",e);
   }
 
 

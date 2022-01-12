@@ -1,6 +1,31 @@
 <div>
-    <button *ngIf="btnVar" class="btn btn-primary mt-3 ms-3" routerLink="admin" (click)="admin()"><b>Admin</b></button>   
     <button *ngIf="!btnVar" class="btn btn-primary mt-3 me-3 mb-3 d-block ms-auto" (click)="LogOut()"> <b>LogOut</b></button>
+</div>
+<div *ngIf="btnVar">
+    <div class="row mt-5">
+        <div class="col-1 col-sm-2 col-md-3 col-lg-4"></div>
+        <div class="col-10 col-sm-8 col-md-6 col-lg-4 border border-secondary px-3 bgg pt-4 pb-2">
+            <div class="text-center my-2">
+                <i class="fas fa-9x fa-user-circle m-2"></i>
+            </div>
+            <form #ref="ngForm" (ngSubmit)="ref.form.valid && adminLogin(ref)">
+                <div class="my-4 ">    
+                    <label for="name" class="form-label fs-5">Uesrname</label>
+                    <input type="text" class="form-control" name="name" id="name" required ngModel #refUsername="ngModel" autocomplete="off">
+                    <p *ngIf="(ref.submitted || refUsername.touched) && refUsername.errors?.required" class="text-danger" >*Username is required</p>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label fs-5"> Password </label>
+                    <input type="password" class="form-control" name="password" id="password" required ngModel #refPassword="ngModel">
+                    <p *ngIf="(ref.submitted || refPassword.touched) && refPassword.errors?.required" class="text-danger">*Password is Required</p>
+                </div>
+                <div class="text-center mb-3">
+                    <button type="submit" class="btn btn-success py-2 px-4 rounded-pill fs-6"> Login </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-1 col-sm-2 col-md-3 col-lg-4"></div>
+    </div>
 </div>
 <div >    
     <router-outlet ></router-outlet>

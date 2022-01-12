@@ -14,12 +14,14 @@ export class AddproductComponent implements OnInit {
   constructor(private ps : ProductsService,private router : Router) { }
 
   ngOnInit(): void {
+    this.isSubmitted = false;
   }
 
   existingSupplierVar : boolean =false;
   newSupplierVar : boolean = false;
   productDetails : boolean = false ;
   btnsel : boolean =false
+  isSubmitted
 
   suppliersBrand=[]
 
@@ -69,9 +71,13 @@ export class AddproductComponent implements OnInit {
 
   
   addProductDetails(ref1){
-    console.log(ref1.value)
-    this.updateDetails.products.push(ref1.value)
-    ref1.reset()
+    this.isSubmitted  = true;
+    if(ref1.form.valid)
+    {
+      this.isSubmitted = false
+      this.updateDetails.products.push(ref1.value)
+      ref1.reset()
+    }
   }
 
   update(){

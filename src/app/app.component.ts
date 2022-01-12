@@ -12,8 +12,22 @@ export class AppComponent {
   constructor(private router : Router){}
   btnVar=true
 
-  admin(){
-    this.btnVar=false
+  adminLogin(ref){
+    if(ref.value.name=="ajitheshwar1923")
+    {
+      if(ref.value.password=="ajith1923")
+      {
+        this.btnVar=false;
+        this.router.navigateByUrl('/admin')
+      }
+      else{
+        alert("Invalid Password ")
+      }
+    }
+    else{
+      alert("Invalid Username")
+    }
+    
   }
   LogOut(){
     this.btnVar=true

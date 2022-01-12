@@ -27,6 +27,7 @@
                     <th rowspan="2">E-Mail</th>
                     <th colspan="2">Phone Numbers</th>
                     <th rowspan="2">Salary</th>
+                    <th rowspan="2"></th>
                 </tr>
                 <tr>
                     <th>Primary</th>
@@ -34,15 +35,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let e of employee | empsearch : searchTerm">
+                <tr *ngFor="let e of employee  | empsearch : searchTerm">
                     <td>{{e.Employee_ID}}</td>
                     <td>{{e.Employee_Name}}</td>
                     <td>{{e.Designation}}</td>
                     <td>{{e.Join_Date}}</td>
-                    <td>{{e.Emp_Email}}</td>
-                    <td>{{e.phone}}</td>
-                    <td>{{e.alt_phone}}</td>
+                    <td *ngIf="!e.edit">{{e.Emp_Email}}</td>
+                    <td *ngIf="!e.edit">{{e.phone}}</td>
+                    <td *ngIf="!e.edit">{{e.alt_phone}}</td>
+                    <td *ngIf="e.edit"><input class="form-control" type="email" name="email" [(ngModel)]="x.email"></td>
+                    <td *ngIf="e.edit"><input class="form-control" type="text" name="ephone1" [(ngModel)]="x.phone"></td>
+                    <td *ngIf="e.edit"><input class="form-control" type="text" name="ephone2" [(ngModel)]="x.altphone"></td>
                     <td>Rs.{{e.Salary}}/-</td>
+                    <td >
+                        <button *ngIf="!e.edit" class="btn btn-primary m-1 p-2 text-white" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit" (click)="editEmployee(e)"><i class="fas fa-edit text-white"></i></button>
+                        <button *ngIf="!e.edit"  class="btn btn-danger m-1 p-2 text-white" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Remove" (click)="deleteEmployee(e)"><i class="fas fa-trash-alt text-white"></i></button>
+                        <button *ngIf="e.edit"  class="btn btn-success m-1 p-2 text-white" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Confirm" (click)="saveEmployeeDetails(e)"><i class="fas fa-check text-white"></i></button>
+                        <button *ngIf="e.edit"  class="btn btn-danger  m-1 p-2 text-white" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cancel" (click)="cancelEditEmployee(e)"><i class="fas fa-times text-white"></i></button>
+                    </td>
                 </tr>
             </tbody>
         </table>

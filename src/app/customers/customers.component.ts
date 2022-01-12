@@ -17,19 +17,17 @@ export class CustomersComponent implements OnInit {
   purchase =[]
   customers=[]
   today
-
+  isSubmitted
 
   ngOnInit(): void {
     
-    
+    this.isSubmitted = false;
     let d=new Date()
     this.today = String(d.getFullYear())+'-'+String(d.getMonth()+1)+'-'+String(d.getDate())
     this.ps.getCustomersByDate(this.today).subscribe(
     res=>{
       this.customers=res["message"]
-      for(let c of this.customers){
-        c.CDate=new Date(c.CDate).toDateString().split(' ').slice(1).join(' ')        
-      }
+      this.changeDate()
     },
       err=>{console.log("err in reading today's customers",err)}
     )
@@ -38,7 +36,12 @@ export class CustomersComponent implements OnInit {
   }
 
   
-
+  changeDate()
+  {
+    for(let c of this.customers){
+      c.CDate=new Date(c.CDate).toDateString().split(' ').slice(1).join(' ')        
+    }
+  }
 
   customerPurchases={customer : {},purchaseList : {}}
   customerDetails(ref){
@@ -49,11 +52,34 @@ export class CustomersComponent implements OnInit {
     this.customerPurchases.customer=obj;
   }
 
-
+  products 
   purchases(ref1){
-    console.log(ref1.value)
-    this.purchase.push(ref1.value)
-    ref1.reset()
+    if(ref1.form.valid)
+    {
+      this.ps.products.subscribe(values =>{this.products = values})
+      let x = false
+      for(let p of this.products)
+      {
+        if(p.Product_ID==ref1.value.pid)
+        {
+          x=true;
+          break; 
+        }
+      }
+      if(x)
+      {
+        this.purchase.push(ref1.value)
+        ref1.reset()
+      }
+      else
+      {
+        alert(`Product with ID ${ref1.value.pid} is not avaible`)
+      }
+    }
+    else
+    {
+      this.isSubmitted = true;
+    }
   }
   
   update(){
@@ -73,7 +99,10 @@ export class CustomersComponent implements OnInit {
   refresh(){
     console.log(this.today)
     this.ps.getCustomersByDate(this.today).subscribe(
-      res=>{this.customers=res["message"]},
+      res=>{
+        this.customers=res["message"]
+        this.changeDate()
+      },
       err=>{console.log("err in reading today's customers",err)}
     )
   }
@@ -83,7 +112,10 @@ export class CustomersComponent implements OnInit {
     let date = value.yyyy+"-"+value.mm+"-"+value.dd;
     console.log(date)
     this.ps.getCustomersByDate(date).subscribe(
-      res=>{this.customers=res["message"]},
+      res=>{
+        this.customers=res["message"]
+        this.changeDate()
+      },
       err=>{console.log("err in reading today's customers",err)}
     )
   }

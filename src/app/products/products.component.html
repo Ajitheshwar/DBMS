@@ -1,8 +1,9 @@
 <div class="container mt-3 rounded bg p-3">
-    <button class="btn btn-dark text-white p-2 mb-2 me-2" routerLink="add"><i class="fas fa-plus pe-1" style="color : white"></i>Add Product</button>
-    <button class="btn btn-primary rounded p-2 mb-2" routerLink="filter"    > Add Filters </button>
+    <button class="btn btn-dark text-white p-2 mb-2 me-2" routerLink="add"><i class="fas fa-plus me-2" style="color : white"></i>Add Product</button>
+    <button class="btn btn-primary rounded p-2 mb-2" routerLink="filter"    > Apply Filters </button>
+    <button class="btn rounded btn-outline-dark p-2 mb-2 ms-2"  data-bs-toggle="modal" data-bs-target="#notificationModal"><i class="far fa-bell me-1"></i> {{size}}</button>
+    <button class="btn btn-dark p-2 float-end" (click)="allProducts()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Refresh"><i class="fas fa-sync"></i></button>
     <router-outlet ></router-outlet> 
-    <button class="btn btn-dark p-2 float-end" (click)="allProducts()"><i class="fas fa-sync"></i></button>
     <div class="table-responsive  border border-dark rounded px-3">   
         <table class="table table-bordered table-light table-hover border-dark table-striped">
             <caption class="table-style"><b>Products in Garment Shop :</b></caption>
@@ -15,6 +16,7 @@
                     <th>Size</th>
                     <th>Price</th>
                     <th>Quantity</th>
+                    <th>Cost</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,9 +28,107 @@
                     <td>{{p.Size}}</td>
                     <td>Rs.{{p.price}}/-</td>
                     <td>{{p.Quantity}}</td>
+                    <td>Rs.{{p.cost}}/-</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
 </div>
+
+
+<!-- notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalLabel">Less Quantity Products</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngFor="let p of lessProductList" class=" py-1">
+              <h5>{{p.Brand_Name}} ({{p.Product_ID}})</h5>
+                <div class="row">
+                    <div class="col"> {{p.PType}} </div> 
+                    <div class="col"> {{p.Color}} </div>   
+                    <div class="col"> {{p.Size}} </div> 
+                    <div class="col"> <b>{{p.Quantity}}</b> </div>   
+                </div>      
+                <div class="pb-2 border-bottom border-secondary text-end">
+                  <button class="btn mt-2 p-1 btn-success rounded text-white" data-bs-toggle="modal" data-bs-target="#suppliersModal" (click)="suppliersList(p)">Get Suppliers </button>
+                </div>
+          </div>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  
+<!-- suppliers Modal -->
+<div class="modal fade" id="suppliersModal" tabindex="-1" aria-labelledby="ModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalLabel2">Suppliers</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div *ngFor="let s of suppliers" class='border-bottom border-secondary py-2'>
+                <h5>{{s.SName}} ({{s.Supplier_ID}})</h5>
+                <div class="row">
+                    <div class="col"> {{s.email}} </div> 
+                    <div class="col"> {{s.phone}} </div> 
+                    <div class="col"> {{s.alt_phone}} </div>   
+                </div>      
+            </div>
+            <div class="mt-2 border  border-secondary rounded bg-light p-2">
+              <form #ref2="ngForm" (ngSubmit)="ref2.form.valid && orderProducts(ref2)">
+                <div class="row mb-2">    
+                  <div class="col-5">
+                      <label class="form-label" for="sname"> <b>Name</b><b class="text-danger">*</b> </label>
+                  </div>
+                  <div class="col-7 ">
+                      <select class="form-select" name="sname" id="sname" ngModel required #refSupplierName="ngModel" autocomplete="off">
+                          <option value="NULL" selected disabled>Select Supplier Name</option>
+                          <option *ngFor="let s of suppliers" value={{s.Supplier_ID}}>{{s.Supplier_ID}}  :  {{s.SName}}</option>
+                      </select>    
+                      <p class="text-danger" *ngIf="(refSupplierName.touched || ref2.submitted) && refSupplierName.errors?.required">*Supplier is required</p>
+                  </div>
+                </div>
+                <div class="row mb-2">    
+                  <div class="col-5">
+                      <label class="form-label" for="cost"> <b>Cost</b><b class="text-danger">*</b> </label>
+                  </div>
+                  <div class="col-7 ">
+                      <input type="number" name="cost" id="cost" class="form-control" required ngModel #refCost="ngModel">   
+                      <p class="text-danger" *ngIf="(refCost.touched || ref2.submitted) && refCost.errors?.required">*Cost is required</p>
+                  </div>
+                </div>
+                <div class="row mb-2">    
+                  <div class="col-5">
+                      <label class="form-label" for="price"> <b>Price</b><b class="text-danger">*</b> </label>
+                  </div>
+                  <div class="col-7 ">
+                      <input type="number" name="price" id="price" class="form-control" required ngModel #refPrice="ngModel">   
+                      <p class="text-danger" *ngIf="(refPrice.touched || ref2.submitted) && refPrice.errors?.required">*Price is required</p>
+                  </div>
+                </div>
+                
+                <div class="row mb-2">    
+                  <div class="col-5">
+                      <label class="form-label" for="quantity"> <b>Quanitity</b><b class="text-danger">*</b> </label>
+                  </div>
+                  <div class="col-7 ">
+                      <input type="number" name="quantity" id="quantity" class="form-control" required ngModel #refquantity="ngModel">   
+                      <p class="text-danger" *ngIf="(refquantity.touched || ref2.submitted) && refquantity.errors?.required">*Quantity is required</p>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <button type="submit" class='btn btn-success mt-1'>Order</button>
+                </div>
+              </form>
+            </div>
+        </div>
+        </div>
+    </div>
+  </div>

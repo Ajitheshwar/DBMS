@@ -42,16 +42,16 @@ con.connect(function(err) {
   console.log(obj,obj.from,obj.to)
   let sql
   if(obj.type=="alltype" && obj.brand=="allbrand"){
-    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to}`
+    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity,pc.cost FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to}`
   }
   else if(obj.type=="alltype" && obj.brand!="allbrand"){
-    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to} AND pc.Brand_Name="${obj.brand}"`
+    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity,pc.cost FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to} AND pc.Brand_Name="${obj.brand}"`
   }
   else if(obj.type!="alltype" && obj.brand=="allbrand"){
-    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to} AND pc.PType="${obj.type}"`
+    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity,pc.cost FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to} AND pc.PType="${obj.type}"`
   }
   else{
-    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to} AND pc.Brand_Name="${obj.brand}" AND pc.PType="${obj.type}"`
+    sql=`SELECT p.Product_ID,pc.Brand_Name,pc.PType,p.Color,p.Size,pc.price,p.Quantity,pc.cost FROM garment.products AS p JOIN garment.cost_price AS pc ON p.Price_ID=pc.Cost_Price_ID WHERE pc.price BETWEEN ${obj.from} AND ${obj.to} AND pc.Brand_Name="${obj.brand}" AND pc.PType="${obj.type}"`
   }
 
  
@@ -81,7 +81,7 @@ app.get("/admin/products/filter",asyncHandler(async(req,res,next)=>{
 //products
 app.get("/admin/products",asyncHandler(async(req,res,next)=>{
 
-  let sql="select p.Product_ID,cp.Brand_Name,cp.PType,p.Color,p.Size,cp.price,p.Quantity  from garment.products as p join garment.cost_price as cp on p.Price_ID=cp.Cost_Price_ID"
+  let sql="select p.Product_ID,cp.Brand_Name,cp.PType,p.Color,p.Size,cp.price,cp.cost,p.Quantity  from garment.products as p join garment.cost_price as cp on p.Price_ID=cp.Cost_Price_ID"
   await con.query(sql,(err,result)=>{
     if(err){
       console.log("err in selecting products",err)
@@ -90,8 +90,44 @@ app.get("/admin/products",asyncHandler(async(req,res,next)=>{
   })
 }))
 
+app.post("/admin/products",asyncHandler(async(req,res,next)=>{
+  console.log(req.body)
+  let sql = `SELECT DISTINCT s.Supplier_ID,s.SName,s.email,s.phone,s.alt_phone FROM garment.suppliers AS s JOIN garment.cost_price AS cp ON cp.Supplier_ID=s.Supplier_ID WHERE cp.Brand_Name='${req.body.brand}'; `
+  await con.query(sql,(err,result)=>{
+    if(err){
+      console.log("err in selecting suppliers for order",err)
+    }
+    res.send({message : result})
+  })
+}))
 
+app.put("/admin/products",asyncHandler(async(req,res,next)=>{
+  let obj = req.body
+  let sql
+  sql=`UPDATE garment.products SET Quantity=Quantity+${obj.quantity} WHERE Product_ID=${obj.pid};`
+  await con.query(sql,(err,result)=>{
+    if(err){
+      console.log("err in selecting suppliers for order",err)
+    }
+  })
 
+  sql=`SELECT Price_ID FROM garment.products WHERE Product_ID=${obj.pid}`
+  await con.query(sql,async(err,result)=>{
+    if(err){
+      console.log("err in selecting suppliers for order",err)
+    }
+    let id=result[0]['Price_ID'];
+    let sid = parseInt(obj.sname)
+
+    sql=`UPDATE garment.cost_price SET Supplier_ID=${sid}, cost=${obj.cost}, price=${obj.price} WHERE Cost_Price_ID=${id};`
+    await con.query(sql,(err,result)=>{
+      if(err){
+        console.log("err in selecting suppliers for order",err)
+      }
+      res.send({message:"Ordered Succeessfully !!!"})
+    })
+  })
+}))
 
 //add
 app.post("/admin/products/add",asyncHandler(async(req,res,next)=>{
@@ -267,6 +303,14 @@ app.post("/admin/customers",asyncHandler(async(req,res,next)=>{
                   console.log("err in inserting purchases",err)
                 }
               })
+
+              sql=`UPDATE garment.products SET Quantity=Quantity-${p.quantity} WHERE Product_ID=${p.pid};`
+              await con.query(sql,(err,result)=>{
+                if(err){
+                  console.log("err in updating purchases in purchases",err)
+                }
+              })
+
               sql=`SELECT cp.price FROM garment.products AS p JOIN garment.cost_price AS cp on p.Price_ID=cp.Cost_Price_ID WHERE p.Product_ID=${p.pid}`
               await con.query(sql,async (err,result)=>{
                 if(err){
@@ -336,6 +380,31 @@ app.get("/admin/employee",asyncHandler(async (req,res,next)=>{
   })
 }))
 
+app.put("/admin/employee",asyncHandler(async (req,res,next)=>{
+  let e = req.body;
+  console.log(e)
+  let sql
+  if(e.delete)
+  {
+    sql=`DELETE FROM garment.employee WHERE Employee_ID=${e.Employee_ID};`
+    con.query(sql,(err,result)=>{
+      if(err){
+        console.log("err in deleting employee details from DB",err)
+      }
+      res.send({message : `Employer ${e.Employee_Name} with id ${e.Employee_ID}  Successfully deleted!!!`})
+    })
+  }
+  else
+  {
+    sql=`UPDATE garment.employee SET Emp_Email='${e.Emp_Email}', phone='${e.phone}', alt_phone='${e.alt_phone}' WHERE Employee_ID=${e.Employee_ID};`
+    con.query(sql,(err,result)=>{
+      if(err){
+        console.log("err in updating employee details from DB",err)
+      }
+      res.send({message : `Employer ${e.Employee_Name} with id ${e.Employee_ID}  Successfully Updated!!!`})
+    })
+  }
+}))
 
 
 
